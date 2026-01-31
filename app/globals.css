@@ -1,24 +1,83 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --background: #050508;
   --foreground: #e8e8f0;
+  --phantom: #8b5cf6;
+  --eerie: #00ff88;
+  --wisp: #4a9eff;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
+  overflow-x: hidden;
 }
 
-@layer utilities {
-  .text-glow {
-    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-  }
+/* Text effects */
+.text-glow {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.6),
+               0 0 40px rgba(139, 92, 246, 0.4),
+               0 0 60px rgba(139, 92, 246, 0.2);
+}
 
-  .ghost-glow {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-  }
+.text-glow-green {
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.6),
+               0 0 40px rgba(0, 255, 136, 0.4);
+}
+
+/* Box effects */
+.ghost-glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3),
+              0 0 40px rgba(139, 92, 246, 0.1);
+}
+
+.ghost-glow-strong {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5),
+              0 0 60px rgba(139, 92, 246, 0.3);
+}
+
+/* Card styles */
+.ghost-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(5, 5, 8, 0.8) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.ghost-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  transform: translateY(-4px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #8b5cf6, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }

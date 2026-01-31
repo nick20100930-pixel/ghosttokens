@@ -7,8 +7,9 @@ export function Header() {
   return (
     <header className="fixed top-0 w-full z-50 bg-void/80 backdrop-blur-md border-b border-phantom/20">
       <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-glow">
-          GhostTokens
+        <Link href="/" className="text-2xl font-bold">
+          <span className="gradient-text">Ghost</span>
+          <span className="text-spectral">Tokens</span>
         </Link>
 
         <div className="flex items-center gap-6">

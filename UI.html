@@ -1,0 +1,322 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Ghost, 
+  Wallet, 
+  Zap, 
+  Shield, 
+  Globe, 
+  ArrowRight, 
+  History, 
+  Plus,
+  Activity,
+  ChevronDown,
+  ExternalLink,
+  Code
+} from 'lucide-react';
+
+// --- Components ---
+
+const NetworkButton = ({ name, icon, active, onClick, color }) => (
+  <button
+    onClick={onClick}
+    className={`relative flex flex-col items-center justify-center p-4 rounded-2xl border transition-all duration-300 ${
+      active 
+        ? `bg-white/10 border-${color}-500/50 shadow-[0_0_20px_rgba(168,85,247,0.15)]` 
+        : 'bg-white/[0.02] border-white/5 hover:border-white/20'
+    }`}
+  >
+    <div className={`text-2xl mb-2 ${active ? `text-${color}-400` : 'text-slate-500'}`}>
+      {icon}
+    </div>
+    <span className={`text-[10px] font-bold uppercase tracking-widest ${active ? 'text-white' : 'text-slate-500'}`}>
+      {name}
+    </span>
+    {active && (
+      <div className={`absolute -top-1 -right-1 w-3 h-3 bg-${color}-500 rounded-full border-2 border-[#050505] animate-pulse`} />
+    )}
+  </button>
+);
+
+const App = () => {
+  const [step, setStep] = useState(1);
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [deploying, setDeploying] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    symbol: '',
+    supply: '1000000',
+    network: 'ETH',
+    tax: '0'
+  });
+
+  const handleDeploy = () => {
+    if (!walletConnected) return;
+    setDeploying(true);
+    setTimeout(() => {
+      setDeploying(false);
+      alert("Deployment logic would trigger here on-chain!");
+    }, 2500);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#050505] text-slate-200 font-sans selection:bg-purple-500/30 overflow-x-hidden">
+      {/* Ambient Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full" />
+      </div>
+
+      {/* Navigation */}
+      <nav className="relative z-50 border-b border-white/5 bg-black/40 backdrop-blur-md sticky top-0">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-tr from-purple-600 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <Ghost className="text-white w-6 h-6" />
+            </div>
+            <span className="text-xl font-black tracking-tighter text-white uppercase italic">
+              GHOSTOKENS
+            </span>
+          </div>
+
+          <div className="hidden md:flex items-center gap-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+            <a href="#" className="hover:text-white transition-colors text-white">Factory</a>
+            <a href="#" className="hover:text-white transition-colors">Dashboard</a>
+            <a href="#" className="hover:text-white transition-colors text-purple-400 font-black">★ Premium</a>
+          </div>
+
+          <button 
+            onClick={() => setWalletConnected(!walletConnected)}
+            className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
+              walletConnected 
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                : 'bg-white text-black border-transparent hover:scale-105 active:scale-95'
+            }`}
+          >
+            {walletConnected ? '0x71C...4921' : 'Connect Wallet'}
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <main className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
+          
+          {/* Left: Input Form */}
+          <div className="lg:col-span-7 space-y-10">
+            <div>
+              <h1 className="text-6xl font-black text-white mb-6 tracking-tighter leading-none">
+                MINT YOUR <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">MANIFESTO.</span>
+              </h1>
+              <p className="text-slate-400 text-lg max-w-md font-medium leading-relaxed">
+                Deploy high-performance ERC-20 tokens with built-in security and instant liquidity hooks.
+              </p>
+            </div>
+
+            <div className="bg-[#0a0a0a] border border-white/5 rounded-[40px] p-8 md:p-10 shadow-2xl">
+              <div className="space-y-8">
+                {/* Network Selection */}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Chain</label>
+                    <span className="text-[10px] font-bold text-slate-600">Select network to deploy</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <NetworkButton name="Eth" icon="⟠" color="blue" active={form.network === 'ETH'} onClick={() => setForm({...form, network: 'ETH'})} />
+                    <NetworkButton name="BSC" icon="🔶" color="yellow" active={form.network === 'BSC'} onClick={() => setForm({...form, network: 'BSC'})} />
+                    <NetworkButton name="Base" icon="🔵" color="blue" active={form.network === 'BASE'} onClick={() => setForm({...form, network: 'BASE'})} />
+                    <NetworkButton name="Pol" icon="🟣" color="purple" active={form.network === 'POL'} onClick={() => setForm({...form, network: 'POL'})} />
+                  </div>
+                </div>
+
+                {/* Token Primary Specs */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Name</label>
+                    <input 
+                      className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-purple-500/50 transition-all text-white placeholder:text-slate-700"
+                      placeholder="e.g. Ghost Protocol"
+                      value={form.name}
+                      onChange={(e) => setForm({...form, name: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Ticker</label>
+                    <input 
+                      className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-purple-500/50 transition-all text-white font-mono uppercase"
+                      placeholder="GHOST"
+                      maxLength={8}
+                      value={form.symbol}
+                      onChange={(e) => setForm({...form, symbol: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                {/* Supply & Advanced */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Supply</label>
+                    <input 
+                      type="number"
+                      className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-purple-500/50 transition-all text-white font-mono"
+                      value={form.supply}
+                      onChange={(e) => setForm({...form, supply: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Sell Tax (%)</label>
+                    <div className="relative">
+                      <input 
+                        type="number"
+                        className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-purple-500/50 transition-all text-white font-mono"
+                        value={form.tax}
+                        onChange={(e) => setForm({...form, tax: e.target.value})}
+                      />
+                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-600 font-bold">%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <button 
+                    disabled={!walletConnected || deploying}
+                    onClick={handleDeploy}
+                    className={`w-full py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 ${
+                      !walletConnected 
+                        ? 'bg-white/5 text-slate-600 cursor-not-allowed border border-white/5' 
+                        : deploying
+                          ? 'bg-purple-600/20 text-purple-400 cursor-wait'
+                          : 'bg-white text-black hover:bg-purple-500 hover:text-white hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] active:scale-[0.98]'
+                    }`}
+                  >
+                    {deploying ? (
+                      <div className="w-5 h-5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        Deploy Smart Contract
+                        <Zap size={16} fill="currentColor" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Live Preview & Feed */}
+          <div className="lg:col-span-5 space-y-8">
+            {/* Card Preview */}
+            <div className="relative group perspective-1000">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 to-blue-600/30 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+              <div className="relative bg-gradient-to-br from-white/10 to-white/[0.02] border border-white/20 rounded-[32px] p-8 backdrop-blur-3xl overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 p-6">
+                  <Ghost className="text-white/20 w-12 h-12" />
+                </div>
+                
+                <div className="mb-12">
+                  <div className="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-2">Ghost Asset ID</div>
+                  <h3 className="text-4xl font-black text-white truncate max-w-[250px]">
+                    {form.name || "UNNAMED"}
+                  </h3>
+                  <div className="font-mono text-xl text-slate-400 mt-1 uppercase tracking-tighter">
+                    {form.symbol || "TKN"}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Supply</div>
+                    <div className="text-lg font-mono font-bold text-white">
+                      {Number(form.supply).toLocaleString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Network</div>
+                    <div className="text-lg font-bold text-white uppercase">{form.network}</div>
+                  </div>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-white/10 flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <Shield className="text-emerald-400 w-4 h-4" />
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Verified Logic</span>
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    v2.0.4-STABLE
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Platform Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6">
+                <Activity className="text-purple-400 mb-3" size={20} />
+                <div className="text-2xl font-black text-white">2.4k</div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Live Deployments</div>
+              </div>
+              <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-6">
+                <Globe className="text-blue-400 mb-3" size={20} />
+                <div className="text-2xl font-black text-white">4</div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Active Networks</div>
+              </div>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-8">
+              <div className="flex justify-between items-center mb-6">
+                <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                  <History size={14} className="text-slate-500" />
+                  Live Stream
+                </h4>
+                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" />
+              </div>
+              <div className="space-y-4">
+                {[
+                  { name: 'VoidToken', sym: 'VOID', time: '12s ago' },
+                  { name: 'CyberSpirit', sym: 'CYBER', time: '2m ago' },
+                  { name: 'SpectralDAO', sym: 'SPEC', time: '5m ago' }
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-transparent hover:border-white/5 transition-all group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center font-black text-[10px] text-slate-500 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                        {item.sym[0]}
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">{item.name}</div>
+                        <div className="text-[10px] text-slate-500 font-mono">{item.sym}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] text-slate-600 font-bold uppercase">{item.time}</div>
+                      <ExternalLink size={12} className="text-slate-700 ml-auto mt-1" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <footer className="relative z-10 border-t border-white/5 py-12 mt-12 bg-black/40">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-2 grayscale opacity-40">
+            <Ghost size={16} />
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Ghostokens Protocol</span>
+          </div>
+          <div className="flex gap-10">
+            {['Twitter', 'Discord', 'Github', 'Docs'].map((link) => (
+              <a key={link} href="#" className="text-[10px] font-black text-slate-600 uppercase tracking-widest hover:text-white transition-colors">
+                {link}
+              </a>
+            ))}
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
