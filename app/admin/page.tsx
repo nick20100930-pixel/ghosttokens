@@ -123,7 +123,7 @@ export default function AdminPage() {
                   <p className="text-sm text-spectral/60">Stock: {product.stock_count} keys</p>
                 </div>
                 <Button 
-                  variant={product.is_active ? "ghost" : "default"}
+                  variant={product.is_active ? "ghost" : "primary"}
                   onClick={() => toggleProduct(product.id, product.is_active)}
                 >
                   {product.is_active ? 'Disable' : 'Enable'}
