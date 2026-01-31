@@ -193,7 +193,7 @@ export default function AdminPage() {
                       </td>
                       <td className="p-3">
                         {key.status === 'available' && (
-                          <Button variant="ghost" size="sm" onClick={() => deleteApiKey(key.id)}>
+                          <Button variant="ghost" onClick={() => deleteApiKey(key.id)}>
                             Delete
                           </Button>
                         )}
