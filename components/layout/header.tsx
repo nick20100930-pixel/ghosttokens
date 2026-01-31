@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 
 export function Header() {
   const [user, setUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
   const router = useRouter()
@@ -17,14 +18,23 @@ export function Header() {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+        setIsAdmin(profile?.role === 'admin')
+      }
       setLoading(false)
     }
     getUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null)
+      }
+    )
     return () => subscription.unsubscribe()
   }, [supabase.auth])
 
@@ -48,6 +58,11 @@ export function Header() {
           <Link href="/dashboard" className="text-spectral hover:text-phantom transition-colors">
             Dashboard
           </Link>
+          {isAdmin && (
+            <Link href="/admin" className="text-phantom hover:text-glow transition-colors">
+              Admin
+            </Link>
+          )}
           {!loading && (
             user ? (
               <Button variant="ghost" onClick={handleSignOut}>
@@ -55,9 +70,7 @@ export function Header() {
               </Button>
             ) : (
               <Link href="/login">
-                <Button variant="ghost">
-                  Sign In
-                </Button>
+                <Button variant="ghost">Sign In</Button>
               </Link>
             )
           )}
